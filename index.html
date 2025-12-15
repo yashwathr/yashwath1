@@ -5,14 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#111318">
-<title>Fault Guard App</title>
+<meta name="theme-color" content="#0f0c29">
+<title>Fault Guard Pro</title>
 
-<!-- Fonts: Roboto for Material Design -->
+<!-- Modern Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-<!-- Material Symbols (Optional, using FA for compatibility but styled like Material) -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -23,451 +22,401 @@
 
 <style>
   :root {
-    /* MD3 Dark Theme Palette */
-    --md-sys-color-background: #111318;
-    --md-sys-color-on-background: #e2e2e6;
-    --md-sys-color-surface: #111318;
-    --md-sys-color-surface-container: #1d2024;
-    --md-sys-color-surface-container-high: #282a2f;
-    --md-sys-color-primary: #a8c7fa;
-    --md-sys-color-on-primary: #003062;
-    --md-sys-color-primary-container: #00478a;
-    --md-sys-color-secondary: #c2c7cf;
-    --md-sys-color-tertiary: #d7bce1;
-    --md-sys-color-error: #ffb4ab;
-    --md-sys-color-outline: #8e9199;
+    /* Liquid Glass Palette */
+    --glass-surface: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.15);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     
-    /* Functional Colors */
-    --color-good: #bcebe2; /* Mint */
-    --color-on-good: #003730;
-    --color-warn: #ffdf9e;
-    --color-bad: #ffb4ab;
+    /* Neon Accents */
+    --neon-blue: #00f2fe;
+    --neon-purple: #bd00ff;
+    --neon-green: #0aff60;
+    --neon-red: #ff0f4f;
+    --neon-amber: #ffaa00;
 
-    /* Metrics */
-    --radius-l: 28px;
-    --radius-m: 16px;
-    --radius-s: 12px;
-    --space-page: 16px;
+    /* Physics */
+    --jelly-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55); 
+    --smooth-ease: cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Animation */
-    --ease-spring: cubic-bezier(0.2, 0.0, 0, 1.0);
+    --card-radius: 32px;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
   
   body {
     margin: 0;
-    background-color: var(--md-sys-color-background);
-    color: var(--md-sys-color-on-background);
-    font-family: 'Roboto', sans-serif;
-    overflow: hidden; /* App-like: no window scroll */
+    background: #050505;
+    color: #ffffff;
+    font-family: 'Outfit', sans-serif;
+    overflow: hidden;
     height: 100vh;
     display: flex;
     flex-direction: column;
   }
 
-  /* Animated Gradient Background */
-  .mesh {
-    position: fixed; inset: 0; z-index: -1;
-    /* Deep Moving Gradient */
-    background: linear-gradient(300deg, #0f0c29, #302b63, #24243e, #02182b, #004d40);
-    background-size: 400% 400%;
-    animation: gradientMove 18s ease infinite;
-  }
-  .mesh::after {
-    content: ''; position: absolute; inset: 0;
-    background: rgba(0, 0, 0, 0.4); /* Light overlay to ensure text contrast */
-  }
-
-  @keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  /* --- APP BAR (Top) --- */
-  .top-app-bar {
-    padding: 16px 20px;
-    display: flex; justify-content: space-between; align-items: center;
-    z-index: 10;
-    background: rgba(17, 19, 24, 0.3);
-    backdrop-filter: blur(10px);
+  /* --- LIQUID BACKGROUND ANIMATION --- */
+  .liquid-bg {
+    position: fixed; inset: 0; z-index: -2;
+    background: #0f0c29;
+    overflow: hidden;
   }
   
-  .headline {
-    font-size: 22px;
-    font-weight: 400; /* Material You prefers lighter weights for headlines */
-    margin: 0;
-    color: var(--md-sys-color-on-background);
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: floatOrb 20s infinite ease-in-out alternate;
+    will-change: transform;
+  }
+  
+  .orb-1 { width: 400px; height: 400px; background: var(--neon-purple); top: -100px; left: -100px; animation-duration: 25s; }
+  .orb-2 { width: 300px; height: 300px; background: var(--neon-blue); bottom: 10%; right: -50px; animation-duration: 18s; animation-delay: -5s; }
+  .orb-3 { width: 250px; height: 250px; background: var(--neon-red); bottom: -50px; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+
+  @keyframes floatOrb {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(30px, 50px) scale(1.1); }
   }
 
-  .status-chip {
-    background: var(--md-sys-color-surface-container-high);
-    color: var(--color-good);
-    padding: 6px 16px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    display: flex; align-items: center; gap: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
+  .noise-overlay {
+    position: fixed; inset: 0; z-index: -1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
   }
 
-  /* --- MAIN CONTENT (Scrollable) --- */
-  .content-area {
+  /* --- APP LAYOUT --- */
+  .app-container {
     flex: 1;
-    overflow-y: auto;
-    padding: 0 var(--space-page) 100px var(--space-page); /* Bottom padding for FAB/Nav */
     display: flex;
     flex-direction: column;
-    gap: 16px;
-  }
-
-  /* Hides scrollbar for cleaner look */
-  .content-area::-webkit-scrollbar { display: none; }
-
-  /* --- MD3 CARDS --- */
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .card-md3 {
-    background: var(--md-sys-color-surface-container);
-    border-radius: var(--radius-l);
     padding: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.1s linear, background 0.2s;
-    /* Slight opacity to show gradient behind */
-    background: rgba(29, 32, 36, 0.85); 
-    backdrop-filter: blur(12px);
+    padding-bottom: 120px; 
+    overflow-y: auto;
+    scrollbar-width: none; 
   }
-  .card-md3:active {
-    transform: scale(0.98);
-    background: var(--md-sys-color-surface-container-high);
-  }
+  .app-container::-webkit-scrollbar { display: none; } 
 
-  /* Card Content */
-  .card-icon-area {
-    width: 40px; height: 40px;
-    border-radius: 12px;
-    background: var(--md-sys-color-surface-container-high);
-    color: var(--md-sys-color-primary);
-    display: grid; place-items: center;
-    font-size: 18px;
-    margin-bottom: 12px;
-  }
-  
-  .card-label {
-    font-size: 14px;
-    color: var(--md-sys-color-secondary);
-    font-weight: 500;
-  }
-  
-  .card-value {
-    font-size: 32px;
-    font-weight: 400;
-    margin-top: 4px;
-    color: var(--md-sys-color-on-background);
-  }
-  
-  .card-unit {
-    font-size: 14px;
-    color: var(--md-sys-color-secondary);
-    margin-left: 2px;
-  }
-
-  /* Dynamic States */
-  .card-md3.state-bad { background: rgba(62, 24, 24, 0.9); }
-  .card-md3.state-bad .card-icon-area { background: #601410; color: #ffb4ab; }
-  .card-md3.state-bad .card-value { color: #ffb4ab; }
-
-  /* --- BIG SWITCH (Relay) --- */
-  .relay-container {
-    background: rgba(40, 42, 47, 0.8);
-    backdrop-filter: blur(10px);
-    border-radius: var(--radius-l);
-    padding: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    border: 1px solid rgba(255,255,255,0.05);
-  }
-  
-  .relay-text h3 { margin: 0; font-size: 18px; font-weight: 500; }
-  .relay-text p { margin: 4px 0 0 0; font-size: 12px; color: var(--md-sys-color-secondary); }
-
-  .big-switch {
-    width: 64px; height: 36px;
-    background: #3f4852;
-    border-radius: 100px;
-    position: relative;
-    transition: background 0.3s var(--ease-spring);
-  }
-  .switch-handle {
-    width: 28px; height: 28px;
-    background: #b0b5c0;
-    border-radius: 50%;
-    position: absolute;
-    top: 4px; left: 4px;
-    transition: transform 0.3s var(--ease-spring), background 0.3s, width 0.2s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  }
-  
-  /* Tripped State (Red) */
-  .big-switch.tripped { background: #93000a; }
-  .big-switch.tripped .switch-handle { 
-    transform: translateX(28px); 
-    background: #ffb4ab; 
-    width: 32px; height: 32px; top: 2px; /* Emphasize active state */
-  }
-  .big-switch.tripped .switch-icon { opacity: 1; }
-
-  /* --- BOTTOM NAVIGATION --- */
-  .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    height: 80px;
-    background: rgba(29, 32, 36, 0.95);
-    backdrop-filter: blur(20px);
-    display: flex;
-    justify-content: space-around; /* Space for FAB */
-    align-items: center;
-    padding: 0 16px;
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
-    z-index: 50;
-  }
-
-  .nav-item {
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    color: var(--md-sys-color-secondary);
-    background: none; border: none;
-    font-size: 12px; font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 16px;
-    transition: all 0.2s;
-  }
-  .nav-item i { font-size: 20px; margin-bottom: 2px; }
-  
-  .nav-item:active {
-    background: rgba(255,255,255,0.1);
-    color: var(--md-sys-color-on-background);
-  }
-
-  /* --- FAB (Floating Action Button) --- */
-  .fab {
-    position: absolute;
-    top: -28px; /* Floating above nav bar */
-    right: 24px;
-    width: 56px; height: 56px;
-    background: var(--md-sys-color-primary-container);
-    color: var(--md-sys-color-primary);
-    border-radius: 16px; /* Squircle */
-    display: grid; place-items: center;
-    font-size: 24px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-    border: none;
-    transition: transform 0.2s;
-  }
-  .fab:active { transform: scale(0.95); background: var(--md-sys-color-primary); color: #000; }
-
-  /* --- CHART SECTION --- */
-  .chart-container {
-    background: var(--md-sys-color-surface-container);
-    border-radius: var(--radius-l);
-    padding: 16px;
-    height: 250px;
-  }
-
-  /* --- MODAL (Material Dialog) --- */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 100;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    display: none; align-items: center; justify-content: center;
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .modal-overlay.open { display: flex; opacity: 1; }
-
-  .md-dialog {
-    background: #2b2d31;
-    width: 90%; max-width: 400px;
-    border-radius: 28px;
-    padding: 24px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    transform: scale(0.9); transition: transform 0.3s var(--ease-spring);
-    display: flex; flex-direction: column;
-    max-height: 80vh;
-  }
-  .modal-overlay.open .md-dialog { transform: scale(1); }
-
-  .dialog-title { font-size: 24px; margin-bottom: 16px; color: var(--md-sys-color-on-background); }
-  
-  .md-input {
-    width: 100%;
-    background: #111318;
-    border: 1px solid var(--md-sys-color-outline);
-    padding: 16px;
-    border-radius: 4px;
-    border-top-left-radius: 4px; border-top-right-radius: 4px;
-    color: white;
-    font-size: 16px;
+  /* Header */
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 24px;
+    padding: 0 10px;
   }
-  
-  .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: auto; }
-  .btn-text {
-    background: transparent; color: var(--md-sys-color-primary);
-    border: none; padding: 10px 12px; font-weight: 500; font-size: 14px;
-    border-radius: 20px;
-  }
-  .btn-filled {
-    background: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
-    border: none; padding: 10px 24px; font-weight: 500; font-size: 14px;
-    border-radius: 20px;
+  .logo-text { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; background: linear-gradient(to right, #fff, #aaa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .status-pill {
+    background: rgba(10, 255, 96, 0.1); border: 1px solid rgba(10, 255, 96, 0.2);
+    color: var(--neon-green); padding: 6px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 0 15px rgba(10, 255, 96, 0.1);
   }
 
-  /* AI Content */
-  .ai-response-area { color: #e2e2e6; line-height: 1.6; overflow-y: auto; }
-  .ai-response-area h3 { color: var(--md-sys-color-primary); margin-top:0; }
-  
-  /* Loading */
-  .spinner {
-    width: 48px; height: 48px; border: 5px solid rgba(255,255,255,0.1);
-    border-left-color: var(--md-sys-color-primary); border-radius: 50%;
-    animation: spin 1s linear infinite; margin: 20px auto;
+  /* --- LIQUID GLASS CARDS --- */
+  .grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
   }
-  @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  /* Hidden Input */
+  .glass-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--card-radius);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), inset 0 0 0 1px rgba(255,255,255,0.05);
+    padding: 20px;
+    overflow: hidden;
+    transition: transform 0.4s var(--jelly-bounce), box-shadow 0.3s ease;
+    will-change: transform;
+  }
+
+  .glass-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
+    border-radius: var(--card-radius) var(--card-radius) 50% 50% / var(--card-radius) var(--card-radius) 20px 20px;
+    pointer-events: none;
+  }
+
+  .glass-card:active {
+    transform: scale(0.92);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  /* Card Inner Content */
+  .card-icon {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    display: grid; place-items: center; font-size: 20px;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 12px;
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.05);
+  }
+  .card-label { font-size: 14px; color: rgba(255,255,255,0.5); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+  .card-val { font-size: 32px; font-weight: 300; margin-top: 4px; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  .card-unit { font-size: 16px; color: rgba(255,255,255,0.4); margin-left: 2px; }
+
+  /* Fault State */
+  .glass-card.fault {
+    background: rgba(255, 15, 79, 0.15);
+    border-color: rgba(255, 15, 79, 0.4);
+    box-shadow: 0 0 30px rgba(255, 15, 79, 0.2), inset 0 0 20px rgba(255, 15, 79, 0.1);
+    animation: pulseFault 2s infinite;
+  }
+  @keyframes pulseFault { 0% { box-shadow: 0 0 0 0 rgba(255, 15, 79, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 15, 79, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 15, 79, 0); } }
+
+  /* --- RELAY SWITCH --- */
+  .relay-card {
+    margin-top: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 24px;
+  }
+  .switch-container {
+    width: 68px; height: 40px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 40px;
+    padding: 4px;
+    position: relative;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+    transition: background 0.3s ease;
+  }
+  .switch-knob {
+    width: 32px; height: 32px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: transform 0.5s var(--jelly-bounce);
+  }
+  
+  .switch-container.tripped { background: rgba(255, 15, 79, 0.3); }
+  .switch-container.tripped .switch-knob { transform: translateX(28px); background: var(--neon-red); box-shadow: 0 0 15px var(--neon-red); }
+
+  /* --- FLOATING NAV BAR --- */
+  .nav-bar {
+    position: fixed; bottom: 20px; left: 20px; right: 20px;
+    height: 75px;
+    background: rgba(20, 20, 25, 0.75);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; justify-content: space-evenly; align-items: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    z-index: 100;
+  }
+
+  .nav-btn {
+    background: none; border: none; color: rgba(255,255,255,0.5);
+    font-size: 24px; padding: 12px; border-radius: 16px;
+    transition: all 0.3s var(--jelly-bounce);
+    position: relative;
+  }
+  .nav-btn:active { transform: scale(0.8); color: #fff; background: rgba(255,255,255,0.1); }
+  
+  .fab {
+    width: 60px; height: 60px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+    border: none; color: #fff; font-size: 24px;
+    box-shadow: 0 8px 20px rgba(189, 0, 255, 0.3);
+    transform: translateY(-25px); 
+    transition: transform 0.4s var(--jelly-bounce);
+    display: grid; place-items: center;
+  }
+  .fab:active { transform: translateY(-25px) scale(0.85); }
+
+  /* --- MODAL ANIMATIONS --- */
+  .chart-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.6); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+  }
+  .chart-overlay.open { 
+    opacity: 1; 
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0s;
+  }
+  
+  .chart-modal {
+    width: 90%; 
+    background: linear-gradient(160deg, rgba(30, 30, 40, 0.95), rgba(15, 15, 20, 0.98));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 30px; padding: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    transform: scale(0.5) translateY(100px);
+    opacity: 0;
+    transition: transform 0.6s var(--jelly-bounce), opacity 0.4s ease;
+  }
+  
+  .chart-overlay.open .chart-modal { 
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  /* --- AI MODAL --- */
+  .ai-dialog {
+    width: 90%; max-height: 70vh;
+    background: linear-gradient(160deg, #1f1f2e, #141419);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 32px; padding: 24px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .ai-content { overflow-y: auto; color: #ddd; line-height: 1.6; margin: 15px 0; font-size: 15px; }
+  .ai-content strong { color: var(--neon-blue); }
+  
+  .loader {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: conic-gradient(#0000 10%, var(--neon-blue));
+    -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+    animation: spinner 1s infinite linear; margin: 20px auto;
+  }
+  @keyframes spinner {to{transform: rotate(1turn)}}
+
+  /* Inputs */
+  .glass-input {
+    width: 100%; padding: 16px; border-radius: 16px;
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+    color: #fff; font-family: inherit; margin: 10px 0;
+  }
+  .glass-btn {
+    width: 100%; padding: 16px; border-radius: 16px; border: none;
+    background: rgba(255,255,255,0.1); color: #fff; font-weight: 600;
+    margin-top: 10px; transition: 0.3s;
+  }
+  .glass-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.98); }
+
   #cameraInput { display: none; }
 </style>
 </head>
 <body>
 
-<div class="mesh"></div>
+<!-- ANIMATED BACKGROUND -->
+<div class="liquid-bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="noise-overlay"></div>
+
+<!-- HIDDEN CAMERA INPUT -->
 <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleImageUpload(event)">
 
-<!-- TOP BAR -->
-<div class="top-app-bar">
-  <h1 class="headline">Fault Guard</h1>
-  <div id="sys" class="status-chip">
-    <i class="fas fa-circle-check"></i> System Normal
-  </div>
-</div>
-
-<!-- MAIN CONTENT -->
-<div class="content-area">
+<div class="app-container">
   
-  <!-- SENSOR GRID -->
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-text">FaultGuard</div>
+    <div id="sys" class="status-pill">
+      <i class="fas fa-check-circle"></i> Secure
+    </div>
+  </div>
+
+  <!-- MAIN SENSOR GRID -->
   <div class="grid">
-    <div id="cVol" class="card-md3" onclick="openChart('vol')">
-      <div class="card-icon-area"><i class="fas fa-bolt"></i></div>
+    <div id="cVol" class="glass-card" onclick="openChart('vol')">
+      <div class="card-icon" style="color:var(--neon-blue)"><i class="fas fa-bolt"></i></div>
       <div class="card-label">Voltage</div>
-      <div class="card-value"><span id="vVol">0.0</span><span class="card-unit">V</span></div>
+      <div class="card-val"><span id="vVol">0.0</span><span class="card-unit">V</span></div>
     </div>
 
-    <div id="cCur" class="card-md3" onclick="openChart('cur')">
-      <div class="card-icon-area"><i class="fas fa-wave-square"></i></div>
+    <div id="cCur" class="glass-card" onclick="openChart('cur')">
+      <div class="card-icon" style="color:var(--neon-green)"><i class="fas fa-wave-square"></i></div>
       <div class="card-label">Current</div>
-      <div class="card-value"><span id="vCur">0.00</span><span class="card-unit">A</span></div>
+      <div class="card-val"><span id="vCur">0.00</span><span class="card-unit">A</span></div>
     </div>
 
-    <div id="cTmp" class="card-md3" onclick="openChart('tmp')">
-      <div class="card-icon-area"><i class="fas fa-temperature-full"></i></div>
-      <div class="card-label">Temp</div>
-      <div class="card-value"><span id="vTmp">0.0</span><span class="card-unit">°C</span></div>
+    <div id="cTmp" class="glass-card" onclick="openChart('tmp')">
+      <div class="card-icon" style="color:var(--neon-amber)"><i class="fas fa-temperature-high"></i></div>
+      <div class="card-label">Core Temp</div>
+      <div class="card-val"><span id="vTmp">0.0</span><span class="card-unit">°C</span></div>
     </div>
 
-    <div id="cLek" class="card-md3" onclick="openChart('lek')">
-      <div class="card-icon-area"><i class="fas fa-droplet"></i></div>
+    <div id="cLek" class="glass-card" onclick="openChart('lek')">
+      <div class="card-icon" style="color:var(--neon-red)"><i class="fas fa-droplet"></i></div>
       <div class="card-label">Leakage</div>
-      <div class="card-value"><span id="vLek">0.00</span><span class="card-unit">A</span></div>
+      <div class="card-val"><span id="vLek">0.00</span><span class="card-unit">A</span></div>
     </div>
   </div>
 
-  <!-- RELAY SWITCH CARD -->
-  <div class="relay-container">
-    <div class="relay-text">
-      <h3>Master Relay</h3>
-      <p id="txtRelay">Status: Armed</p>
+  <!-- RELAY CONTROL -->
+  <div class="glass-card relay-card">
+    <div>
+      <div class="card-label" style="margin-bottom:4px;">Master Relay</div>
+      <div id="txtRelay" style="font-size:18px; font-weight:600;">Armed</div>
     </div>
-    <div id="btnRelay" class="big-switch">
-      <div class="switch-handle"></div>
-    </div>
-  </div>
-
-  <!-- CHART CARD (Single View) -->
-  <div class="chart-container" style="display:none;" id="mainChartCard">
-    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-      <span style="font-weight:500; color:var(--md-sys-color-secondary)" id="chartTitle">History</span>
-      <i class="fas fa-times" onclick="hideChart()" style="padding:5px;"></i>
-    </div>
-    <div style="width:100%; height:85%;">
-      <canvas id="chartMain"></canvas>
+    <div id="btnRelay" class="switch-container">
+      <div class="switch-knob"></div>
     </div>
   </div>
 
 </div>
 
-<!-- BOTTOM NAVIGATION BAR -->
-<div class="bottom-nav">
-  <button class="nav-item" onclick="diagnoseSystem()">
-    <i class="fas fa-wand-magic-sparkles"></i>
-    Diagnose
-  </button>
+<!-- FLOATING NAVIGATION -->
+<div class="nav-bar">
+  <button class="nav-btn" onclick="diagnoseSystem()"><i class="fas fa-wand-magic-sparkles"></i></button>
+  <button class="nav-btn" onclick="generateReport()"><i class="fas fa-file-invoice"></i></button>
   
-  <button class="nav-item" onclick="generateReport()">
-    <i class="fas fa-file-lines"></i>
-    Report
-  </button>
-  
-  <button class="nav-item" onclick="openSettings()">
-    <i class="fas fa-gear"></i>
-    Settings
-  </button>
-
-  <!-- FAB: Inspect -->
+  <!-- FAB -->
   <button class="fab" onclick="document.getElementById('cameraInput').click()">
     <i class="fas fa-camera"></i>
   </button>
+  
+  <button class="nav-btn" onclick="openSettings()"><i class="fas fa-cog"></i></button>
+  <button class="nav-btn" onclick="location.reload()"><i class="fas fa-rotate-right"></i></button>
 </div>
 
-<!-- MODALS (Dialogs) -->
+<!-- MODALS -->
 
-<!-- SETTINGS -->
-<div id="settingsModal" class="modal-overlay" onclick="closeModals(event)">
-  <div class="md-dialog" onclick="event.stopPropagation()">
-    <div class="dialog-title">Settings</div>
-    <p style="color:#aaa; font-size:14px; margin-bottom:10px;">Gemini API Key override:</p>
-    <input type="password" id="apiKeyInput" class="md-input" placeholder="Enter key...">
-    <div class="dialog-actions">
-      <button class="btn-text" onclick="clearSettings()">Reset</button>
-      <button class="btn-filled" onclick="saveSettings()">Save</button>
+<!-- CHART OVERLAY -->
+<div id="chartOverlay" class="chart-overlay" onclick="closeModals(event)">
+  <div class="chart-modal" onclick="event.stopPropagation()">
+    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+      <span style="font-size:20px; font-weight:600; color:#fff;" id="chartTitle">Trend</span>
+      <i class="fas fa-times" onclick="closeModals()" style="font-size:24px; opacity:0.5; color:#fff;"></i>
+    </div>
+    <div style="height:250px;"><canvas id="chartMain"></canvas></div>
+  </div>
+</div>
+
+<!-- SETTINGS OVERLAY -->
+<div id="settingsOverlay" class="chart-overlay" onclick="closeModals(event)">
+  <div class="chart-modal ai-dialog" onclick="event.stopPropagation()">
+    <h2 style="margin-top:0">First Run Setup</h2>
+    <p style="opacity:0.8; font-size:14px; margin-bottom:15px;">
+      <b>Secure Mode:</b> To use AI features, please paste your Gemini API Key below. <br><br>
+      This key is saved <b>locally in your browser</b> and is never sent to our servers.
+    </p>
+    <input type="password" id="apiKeyInput" class="glass-input" placeholder="Paste key starting with AIza...">
+    <div id="keyStatus" style="font-size:12px; margin-top:5px; color:#aaa;"></div>
+    <div style="display:flex; gap:10px;">
+      <button class="glass-btn" onclick="clearSettings()" style="background:rgba(255,255,255,0.05)">Clear</button>
+      <button class="glass-btn" onclick="saveSettings()" style="background:var(--neon-blue); color:#000;">Save & Enable</button>
     </div>
   </div>
 </div>
 
-<!-- AI RESULTS -->
-<div id="aiModal" class="modal-overlay" onclick="closeModals(event)">
-  <div class="md-dialog" onclick="event.stopPropagation()">
-    <div class="dialog-title" id="aiTitle">Analysis</div>
+<!-- AI OVERLAY -->
+<div id="aiOverlay" class="chart-overlay" onclick="closeModals(event)">
+  <div class="chart-modal ai-dialog" onclick="event.stopPropagation()">
+    <h2 style="margin-top:0" id="aiTitle">Analysis</h2>
     <div id="aiLoading" style="text-align:center;">
-      <div class="spinner"></div>
-      <p style="color:#ccc" id="aiLoadingText">Thinking...</p>
+      <div class="loader"></div>
+      <p style="opacity:0.6" id="aiLoadingText">Thinking...</p>
     </div>
-    <div id="aiContent" class="ai-response-area" style="display:none;"></div>
-    <div class="dialog-actions">
-      <button class="btn-text" onclick="closeModals()">Close</button>
-    </div>
+    <div id="aiContent" class="ai-content" style="display:none;"></div>
+    <button class="glass-btn" onclick="closeModals()">Close</button>
   </div>
 </div>
 
 <script>
 /* --- Init Firebase --- */
+// CORRECT DATABASE URL
 const firebaseConfig = { 
   databaseURL: "https://ucfd-31619-default-rtdb.asia-southeast1.firebasedatabase.app/" 
 };
@@ -500,24 +449,20 @@ function updateHist(key, val) {
   if(history[key].length > MAX_PTS) { history[key].shift(); labels[key].shift(); }
 }
 
-function hideChart() {
-  document.getElementById('mainChartCard').style.display = 'none';
-}
-
 function openChart(type) {
-  const card = document.getElementById('mainChartCard');
+  const overlay = document.getElementById('chartOverlay');
   const title = document.getElementById('chartTitle');
-  card.style.display = 'block';
+  overlay.classList.add('open');
   
-  let color = '#a8c7fa'; // Primary
-  if(type === 'vol') { title.innerText = 'Voltage Trend'; color = '#a8c7fa'; }
-  if(type === 'cur') { title.innerText = 'Current Trend'; color = '#bcebe2'; }
-  if(type === 'tmp') { title.innerText = 'Temp Trend'; color = '#ffdf9e'; }
-  if(type === 'lek') { title.innerText = 'Leakage Trend'; color = '#ffb4ab'; }
+  let color = '#fff';
+  if(type === 'vol') { title.innerText = 'Voltage History'; color = '#00f2fe'; }
+  if(type === 'cur') { title.innerText = 'Current History'; color = '#0aff60'; }
+  if(type === 'tmp') { title.innerText = 'Temp History'; color = '#ffaa00'; }
+  if(type === 'lek') { title.innerText = 'Leakage History'; color = '#ff0f4f'; }
 
   if(mainChartInstance) mainChartInstance.destroy();
 
-  const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+  const gradient = ctx.createLinearGradient(0, 0, 0, 300);
   gradient.addColorStop(0, color);
   gradient.addColorStop(1, 'rgba(0,0,0,0)');
 
@@ -530,13 +475,17 @@ function openChart(type) {
         borderColor: color,
         backgroundColor: gradient,
         fill: true,
-        pointRadius: 2,
+        pointRadius: 4,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: color,
+        borderWidth: 2,
         tension: 0.4
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: { duration: 800, easing: 'easeOutQuart' },
       plugins: { legend: { display: false } },
       scales: {
         x: { display: false },
@@ -546,79 +495,110 @@ function openChart(type) {
   });
 }
 
-/* --- API Key Management --- */
-const HARDCODED_KEY = "AIzaSyDmmEqPcvJIGQrRYOIV_X8rY8NHRGbUVNY"; 
+/* --- API Key Management (SECURE - NO HARDCODING) --- */
+window.onload = function() {
+  const key = localStorage.getItem('gemini_api_key');
+  if(!key) {
+    setTimeout(() => {
+        openSettings();
+        document.getElementById('keyStatus').innerText = "⚠️ AI features paused. Please enter key.";
+    }, 800);
+  }
+};
 
 function getApiKey() {
-  let key = localStorage.getItem('gemini_api_key');
-  if (!key || key.trim() === "") key = HARDCODED_KEY;
+  const key = localStorage.getItem('gemini_api_key');
+  if (!key || key.trim() === "") {
+    alert("Please enter your API Key in Settings to use this feature.");
+    openSettings();
+    return null;
+  }
   return key;
 }
 
 function openSettings() {
-  document.getElementById('settingsModal').classList.add('open');
-  document.getElementById('apiKeyInput').value = localStorage.getItem('gemini_api_key') || '';
+  document.getElementById('settingsOverlay').classList.add('open');
+  const savedKey = localStorage.getItem('gemini_api_key');
+  document.getElementById('apiKeyInput').value = savedKey || '';
+  if(savedKey) {
+      document.getElementById('keyStatus').innerText = "✅ Key saved securely.";
+      document.getElementById('keyStatus').style.color = "var(--neon-green)";
+  }
 }
 
 function saveSettings() {
   const key = document.getElementById('apiKeyInput').value.trim();
-  if(key) localStorage.setItem('gemini_api_key', key);
-  closeModals();
+  if(key) {
+      localStorage.setItem('gemini_api_key', key);
+      document.getElementById('keyStatus').innerText = "✅ Saved!";
+      setTimeout(() => closeModals(), 500);
+  } else {
+      alert("Please enter a valid key.");
+  }
 }
 
 function clearSettings() {
   localStorage.removeItem('gemini_api_key');
-  closeModals();
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('keyStatus').innerText = "Key removed.";
 }
 
-/* --- AI Functions --- */
 function closeModals(e) {
-  if (e && e.target !== e.currentTarget) return; // Only close if clicking overlay, not content
-  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  if (e && e.target !== e.currentTarget) return; 
+  document.querySelectorAll('.chart-overlay').forEach(m => m.classList.remove('open'));
   document.getElementById('cameraInput').value = '';
 }
 
+/* --- AI Logic (Gemini 2.5 Flash) --- */
 async function callGemini(payload, loadingMsg, title) {
   const apiKey = getApiKey();
-  const modal = document.getElementById('aiModal');
+  if(!apiKey) return;
+
+  const overlay = document.getElementById('aiOverlay');
   const loader = document.getElementById('aiLoading');
   const content = document.getElementById('aiContent');
   
   document.getElementById('aiTitle').innerText = title;
   document.getElementById('aiLoadingText').innerText = loadingMsg;
   
-  modal.classList.add('open');
+  overlay.classList.add('open');
   loader.style.display = 'block';
   content.style.display = 'none';
   content.innerHTML = '';
 
   try {
+    // USING LATEST 2.5 MODEL (PREVIEW)
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
+    
+    if(!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error?.message || "API Request Failed");
+    }
+
     const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
     content.innerHTML = marked.parse(text);
     loader.style.display = 'none';
     content.style.display = 'block';
   } catch (err) {
     loader.style.display = 'none';
     content.style.display = 'block';
-    content.innerHTML = `<p style="color:var(--md-sys-color-error)">Error: ${err.message}</p>`;
+    content.innerHTML = `<p style="color:#ff0f4f"><strong>Error:</strong> ${err.message}</p>`;
   }
 }
 
 function diagnoseSystem() {
-  const prompt = `Analyze this telemetry: V=${ui.v.el.innerText}, I=${ui.c.el.innerText}, T=${ui.t.el.innerText}, Leak=${ui.l.el.innerText}. Thresholds: V<10.5, I>2.8, T>60, L>0.1. Identify faults and suggest fixes.`;
-  callGemini({ contents: [{ parts: [{ text: prompt }] }] }, "Analyzing...", "Diagnosis");
+  const prompt = `Analyze: Voltage=${ui.v.el.innerText}V, Current=${ui.c.el.innerText}A, Temp=${ui.t.el.innerText}C, Leakage=${ui.l.el.innerText}A. Thresholds: V<10.5, I>2.8, T>60, L>0.1. Report status concisely.`;
+  callGemini({ contents: [{ parts: [{ text: prompt }] }] }, "Diagnosing...", "Diagnosis");
 }
 
 function generateReport() {
-  // Simple report logic
-  const prompt = `Generate a maintenance report. Current readings: Voltage ${ui.v.el.innerText}V, Current ${ui.c.el.innerText}A. Recent history suggests normal operation or faults? Assess stability.`;
-  callGemini({ contents: [{ parts: [{ text: prompt }] }] }, "Generating Report...", "Session Report");
+  const prompt = `Create a formal electrical maintenance report for current session. Readings: ${ui.v.el.innerText}V, ${ui.c.el.innerText}A. Is system stable?`;
+  callGemini({ contents: [{ parts: [{ text: prompt }] }] }, "Compiling Report...", "Report");
 }
 
 function handleImageUpload(e) {
@@ -630,24 +610,25 @@ function handleImageUpload(e) {
     callGemini({
       contents: [{
         parts: [
-          { text: "Inspect this electrical component for damage (burns, fraying, corrosion)." },
+          { text: "Analyze this wiring/component image for physical damage, corrosion, or burns." },
           { inline_data: { mime_type: file.type, data: b64 } }
         ]
       }]
-    }, "Scanning Image...", "Visual Inspection");
+    }, "Scanning...", "Visual Inspector");
   };
   reader.readAsDataURL(file);
 }
 
-/* --- Main Data Logic --- */
+/* --- Data & Relay Logic --- */
 let manualLockActive = false;
 let manualLockTimer = null;
 
 function processData(data) {
-  const v = Number(data.voltage ?? data.Voltage ?? 0);
-  const c = Number(data.current ?? data.Current ?? 0);
-  const t = Number(data.temperature ?? data.Temperature ?? 0);
-  const l = Number(data.leakage_current ?? data.leakage ?? 0);
+  // Normalize keys
+  const v = Number(data.voltage ?? data.Voltage ?? data.V ?? 0);
+  const c = Number(data.current ?? data.Current ?? data.I ?? 0);
+  const t = Number(data.temperature ?? data.Temperature ?? data.temp ?? 0);
+  const l = Number(data.leakage_current ?? data.leakage ?? data.Leakage ?? 0);
 
   ui.v.el.innerText = v.toFixed(1);
   ui.c.el.innerText = c.toFixed(2);
@@ -663,58 +644,62 @@ function processData(data) {
   const anyFault = (v < TH.vol) || (c > TH.cur) || (t > TH.tmp) || (l > TH.lek);
   if(anyFault) {
     ui.sys.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Fault Detected';
-    ui.sys.style.color = 'var(--md-sys-color-error)';
-    ui.sys.style.background = '#601410';
+    ui.sys.style.color = 'var(--neon-red)';
+    ui.sys.style.borderColor = 'rgba(255, 15, 79, 0.4)';
+    ui.sys.style.backgroundColor = 'rgba(255, 15, 79, 0.1)';
   } else {
-    ui.sys.innerHTML = '<i class="fas fa-circle-check"></i> System Normal';
-    ui.sys.style.color = 'var(--color-good)';
-    ui.sys.style.background = 'var(--md-sys-color-surface-container-high)';
+    ui.sys.innerHTML = '<i class="fas fa-check-circle"></i> System Secure';
+    ui.sys.style.color = 'var(--neon-green)';
+    ui.sys.style.borderColor = 'rgba(10, 255, 96, 0.2)';
+    ui.sys.style.backgroundColor = 'rgba(10, 255, 96, 0.1)';
   }
 
   updateHist('vol', v); updateHist('cur', c); updateHist('tmp', t); updateHist('lek', l);
   if(mainChartInstance) mainChartInstance.update('none');
 
   if(!manualLockActive) {
-    const rStat = data.relay_status ?? 'CLOSED';
+    const rStat = data.relay_status ?? data.relay ?? 'CLOSED';
     const isOpen = (String(rStat).toUpperCase() === 'OPEN' || rStat == 1);
     setRelayVisuals(isOpen);
   }
 }
 
 function setCardState(card, isBad) {
-  if(isBad) card.classList.add('state-bad');
-  else card.classList.remove('state-bad');
+  if(isBad) card.classList.add('fault');
+  else card.classList.remove('fault');
 }
 
 function setRelayVisuals(isOpen) {
   const btn = ui.relay.btn;
   const txt = ui.relay.txt;
   if(isOpen) {
-    btn.classList.add('tripped'); // Red
-    txt.innerText = "Status: TRIPPED (Open)";
-    txt.style.color = "var(--md-sys-color-error)";
+    btn.classList.add('tripped'); 
+    txt.innerText = "TRIPPED";
+    txt.style.color = "var(--neon-red)";
   } else {
-    btn.classList.remove('tripped'); // Grey
-    txt.innerText = "Status: ARMED (Closed)";
-    txt.style.color = "var(--md-sys-color-secondary)";
+    btn.classList.remove('tripped'); 
+    txt.innerText = "ARMED";
+    txt.style.color = "#fff";
   }
 }
 
 // Relay Click
 ui.relay.btn.addEventListener('click', () => {
   const isTripped = ui.relay.btn.classList.contains('tripped');
-  const nextState = !isTripped; // Toggle
+  const nextState = !isTripped; 
   
   setRelayVisuals(nextState);
   manualLockActive = true;
   if(manualLockTimer) clearTimeout(manualLockTimer);
   manualLockTimer = setTimeout(() => { manualLockActive = false; }, 6000);
 
-  db.ref().update({
-    'manual_controls/relay_status': nextState ? 'OPEN' : 'CLOSED',
-    'relay': nextState ? 1 : 0
-  }).catch(e => {
-    alert("Error: " + e.message);
+  // Update BOTH locations to ensure ESP32 sees it
+  const updates = {};
+  updates['manual_controls/relay_status'] = nextState ? 'OPEN' : 'CLOSED';
+  updates['relay'] = nextState ? 1 : 0;
+
+  db.ref().update(updates).catch(e => {
+    alert("Write Error: " + e.message);
     setRelayVisuals(isTripped);
   });
 });
@@ -731,4 +716,3 @@ db.ref('manual_controls/relay_status').on('value', s => {
 </script>
 </body>
 </html>
-
